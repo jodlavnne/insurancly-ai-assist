@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
 import { ChevronDown, Loader2, Sparkles, Paperclip, ShieldCheck, Send, Lightbulb, Check, BookOpen, ArrowRight, UserCheck } from "lucide-react";
 import { Panel, Tag, StatusIcon, ReadinessRing, SourceTrail, type Source } from "@/components/ui-bits";
-import { useCase, EHR_TREATMENT_EXCERPT } from "@/lib/case-store";
+import { useCase } from "@/lib/case-store";
 import { LAYERS } from "@/lib/layers";
 
 export const Route = createFileRoute("/precheck")({
@@ -192,7 +192,7 @@ function PreCheck() {
                <p className="mt-2 rounded-lg bg-secondary/60 p-3 text-xs">The request mentions physiotherapy and analgesics. The clinician must check the underlying record and supply any relevant duration and response; Insurancly cannot see the report.</p>
                <textarea value={c.clinicianNote} onChange={(e) => c.setClinicianNote(e.target.value)} disabled={done} placeholder="Clinician-confirmed treatment response…" className="mt-2 w-full rounded-lg border bg-background p-2 text-xs" rows={2} />
                <p className="mt-1 text-[11px] text-muted-foreground">Enter the confirmed response before marking this item complete.</p>
-              <button disabled={done} onClick={() => c.setTreatmentResponse(!c.treatmentResponse)} className={`mt-2 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium ${c.treatmentResponse ? "bg-success text-success-foreground" : "bg-primary text-primary-foreground"}`}>
+               <button disabled={done || (!c.treatmentResponse && !c.clinicianNote.trim())} onClick={() => c.setTreatmentResponse(!c.treatmentResponse)} className={`mt-2 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50 ${c.treatmentResponse ? "bg-success text-success-foreground" : "bg-primary text-primary-foreground"}`}>
                  <UserCheck className="h-3.5 w-3.5" /> {c.treatmentResponse ? "Confirmed by clinician" : "Confirm response"}
               </button>
             </div>
