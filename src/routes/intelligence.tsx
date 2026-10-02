@@ -35,7 +35,7 @@ function Intel() {
         {[
           ["Similar authorizations", String(318 + extra)],
           ["Additional-information requests", "74"],
-          ["Addressable from existing EHR data", "61%"],
+           ["Requests requiring team confirmation", "61%"],
           ["Avg. response time (observed)", "11.4 h"],
         ].map(([k, v]) => <Panel key={k}><p className="text-xs text-muted-foreground">{k}</p><p className="mt-2 font-display text-2xl font-semibold">{v}</p></Panel>)}
       </div>
@@ -60,7 +60,7 @@ function Intel() {
       <Panel title="How to read this">
         <div className="grid gap-4 text-sm md:grid-cols-3">
           <div><Tag tone="primary">NPHIES technical</Tag><p className="mt-2 text-muted-foreground">Format, coding and mandatory fields. Checked in Layer 1.</p></div>
-          <div><Tag tone="success">Clinical readiness</Tag><p className="mt-2 text-muted-foreground">Documentation quality against Hospital → Saudi → International (when needed) evidence.</p></div>
+           <div><Tag tone="success">Clinical readiness</Tag><p className="mt-2 text-muted-foreground">Request details and team confirmations against Hospital → Saudi → International (when needed) guidance; medical reports are not accessed.</p></div>
           <div><Tag tone="intel">Insurer intelligence</Tag><p className="mt-2 text-muted-foreground">What this hospital has observed. The insurer alone makes coverage decisions.</p></div>
         </div>
       </Panel>

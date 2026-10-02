@@ -43,7 +43,7 @@ function Dashboard() {
           ["Requests pre-checked (30d)", "1,142"],
           ["Avg. Authorization Readiness at first check", "78%"],
           ["Additional-info requests (90d, observed)", "74 / 318"],
-          ["Issues resolvable from existing EHR", "61%"],
+           ["Requests requiring team confirmation", "61%"],
         ].map(([k, v]) => (
           <Panel key={k}><p className="text-xs text-muted-foreground">{k}</p><p className="mt-2 font-display text-2xl font-semibold">{v}</p></Panel>
         ))}
