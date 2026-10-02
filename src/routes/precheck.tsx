@@ -9,7 +9,7 @@ export const Route = createFileRoute("/precheck")({
   head: () => ({
     meta: [
       { title: "Authorization Pre-Check — Insurancly" },
-      { name: "description", content: "Layered pre-check of NPHIES technical requirements, clinical documentation readiness and insurer interaction intelligence." },
+      { name: "description", content: "Layered pre-check of request details and insurer interaction patterns without access to medical reports." },
       { property: "og:title", content: "Authorization Pre-Check — Insurancly" },
       { property: "og:description", content: "See findings, evidence sources and the next best action before NPHIES submission." },
     ],
@@ -98,9 +98,10 @@ function PreCheck() {
           <div className="min-w-60 flex-1">
             <p className="text-xs text-muted-foreground">AUTH-24817 · Sara Alharbi, 46 · Lumbar Spine MRI · Insurer X (Demo)</p>
             <h1 className="mt-1 font-display text-2xl font-semibold">Authorization Readiness: {c.readiness}%</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Measures request completeness and documentation quality before submission. It is not a prediction of the insurer's decision.</p>
+             <p className="mt-1 text-sm text-muted-foreground">Measures available request details and team-confirmed items, not medical-report contents or the insurer’s decision.</p>
+             <p className="mt-1 text-xs text-muted-foreground">Insurancly cannot view medical reports. Items below are prompts to confirm, not claims that information is absent from a report.</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {ready ? <Tag tone="success"><Check className="h-3 w-3" /> Ready for NPHIES</Tag> : <Tag tone="warning">{(c.treatmentResponse ? 0 : 1) + (c.imagingAttached ? 0 : 1)} open item(s)</Tag>}
+               {ready ? <Tag tone="success"><Check className="h-3 w-3" /> Ready for NPHIES</Tag> : <Tag tone="warning">{(c.treatmentResponse ? 0 : 1) + (c.imagingConfirmed ? 0 : 1)} confirmation(s) needed</Tag>}
               <Tag>ICD-10-AM · Saudi / NPHIES terminology checked</Tag>
             </div>
           </div>
@@ -116,41 +117,41 @@ function PreCheck() {
             <Row s="ok">Diagnosis code structurally valid <span className="text-xs text-muted-foreground">(M54.16, ICD-10-AM)</span></Row>
             <Row s="ok">Requested service linked to diagnosis</Row>
             <Row s="ok">Encounter dates consistent</Row>
-            <Row s={c.imagingAttached ? "ok" : "fail"}>{c.imagingAttached ? "Imaging report attached (X-ray Lumbar, 12 Jul 2026)" : "Supporting imaging/report attachment missing"}</Row>
+             <Row s={c.imagingConfirmed ? "ok" : "warn"}>{c.imagingConfirmed ? "Supporting imaging status confirmed by team" : "Confirm whether supporting imaging is required and included"}</Row>
           </ul>
         </Panel>
 
-        <Panel title="2. Clinical Documentation" subtitle="Layers 2–4 · Readiness of clinical record" tag={<Tag tone="success">Clinical</Tag>}>
+         <Panel title="2. Clinical Documentation" subtitle="Layers 2–4 · Request details and team confirmation, not report review" tag={<Tag tone="success">Clinical</Tag>}>
           <ul className="divide-y">
-            <Row s="ok" extra={<SourceTrail used={["Hospital"]} />}>Diagnosis documented</Row>
-            <Row s="ok" extra={<SourceTrail used={["Hospital"]} />}>Clinical indication documented</Row>
-            <Row s="ok" extra={<SourceTrail used={["Hospital"]} />}>Hospital protocol criteria addressed</Row>
+             <Row s="ok" extra={<SourceTrail used={["Hospital"]} />}>Diagnosis listed in request</Row>
+             <Row s="ok" extra={<SourceTrail used={["Hospital"]} />}>Clinical indication listed in request</Row>
+             <Row s="warn" extra={<SourceTrail used={["Hospital"]} />}>Team must confirm supporting details against hospital protocol</Row>
             <Row s={c.treatmentResponse ? "ok" : "warn"} extra={
               <div className="space-y-2">
                 <SourceTrail used={["Hospital", "Saudi", "International"]} />
                 <Why used={["Hospital", "Saudi", "International"]}>
                   <p className="font-medium">Evidence hierarchy used</p>
                   <ol className="space-y-1.5">
-                    <li><Tag tone="primary">Hospital</Tag> 1. Hospital-approved Orthopedic Imaging Protocol (RMC-ORTH-IMG-07) — <b>checked first</b>. Requires documented response to ≥6 weeks of conservative treatment.</li>
+                     <li><Tag tone="primary">Hospital</Tag> 1. Simulated hospital Orthopedic Imaging Protocol (RMC-ORTH-IMG-07) — <b>checked first</b>. Calls for confirmation of the response to ≥6 weeks of conservative treatment.</li>
                     <li><Tag tone="primary">Saudi</Tag> 2. Applicable Saudi guidance — checked where needed; supports documenting failed conservative management for elective imaging.</li>
-                    <li><Tag tone="primary">International</Tag> 3. International guideline/reference (e.g. ACR Appropriateness Criteria, low-back pain) — consulted only because the response-to-treatment definition was not sufficiently addressed locally.</li>
+                     <li><Tag tone="primary">International</Tag> 3. International guideline/reference (e.g. ACR Appropriateness Criteria, low-back pain) — consulted only where local guidance needs clarification.</li>
                   </ol>
-                  <p className="text-muted-foreground">Not every request is checked against every international guideline — international references are used only when needed.</p>
+                   <p className="text-muted-foreground">These sources guide the request-level prompt; they do not verify what is in an unseen medical report.</p>
                 </Why>
               </div>
-            }>{c.treatmentResponse ? "Conservative-treatment response documented (clinician-verified)" : "Previous conservative-treatment response insufficiently documented"}</Row>
+             }>{c.treatmentResponse ? "Conservative-treatment response confirmed by clinician" : "Confirm whether response to conservative treatment is documented"}</Row>
             <Row s="ok" extra={<SourceTrail used={["Hospital", "Saudi"]} />}>Relevant Saudi guidance reviewed</Row>
           </ul>
         </Panel>
 
-        <Panel title="3. Evidence Retrieval" subtitle="Searched the simulated EHR — nothing is generated" tag={<Tag>EHR</Tag>}>
+         <Panel title="3. Information Available" subtitle="Request-level details only · no medical report or EHR access" tag={<Tag>Request</Tag>}>
           <ul className="divide-y">
-            <Row s="ok">Previous physiotherapy record found in EHR</Row>
-            <Row s="ok">Analgesic treatment history found</Row>
-            <Row s={c.treatmentResponse ? "ok" : "fail"} extra={!c.treatmentResponse && <Tag tone="danger">Unresolved — clinician input required</Tag>}>
-              {c.treatmentResponse ? "Treatment response confirmed by clinician" : "Treatment response not clearly documented"}
+             <Row s="ok">Physiotherapy and analgesics mentioned in request</Row>
+             <Row s="warn">Duration and response cannot be verified from the request alone</Row>
+             <Row s={c.treatmentResponse ? "ok" : "warn"} extra={!c.treatmentResponse && <Tag tone="warning">Team confirmation required</Tag>}>
+               {c.treatmentResponse ? "Treatment response confirmed by clinician" : "Confirm treatment response with clinician"}
             </Row>
-            <Row s={c.imagingAttached ? "ok" : "warn"}>{c.imagingAttached ? "Previous imaging report attached" : "Previous imaging report found but not attached"}</Row>
+             <Row s={c.imagingConfirmed ? "ok" : "warn"}>{c.imagingConfirmed ? "Imaging requirements confirmed by team" : "Imaging report availability and attachment status unknown"}</Row>
           </ul>
         </Panel>
       </div>
@@ -161,7 +162,7 @@ function PreCheck() {
           {ready ? (
             <p className="text-sm">All identified items are resolved. Request is ready for final human review and NPHIES submission.</p>
           ) : (
-            <p className="text-base leading-relaxed">“Treatment history exists in the medical record. Add the documented treatment response and attach the relevant imaging report before submission.”</p>
+             <p className="text-base leading-relaxed">“The request mentions prior treatment, but its response and any supporting imaging cannot be verified from unseen reports. Ask the clinical team to confirm both before submission.”</p>
           )}
           <div className="mt-4 flex flex-wrap gap-2">
             <button onClick={() => setEvidenceOpen(!evidenceOpen)} className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-secondary"><BookOpen className="h-4 w-4" /> Review Evidence</button>
@@ -169,9 +170,9 @@ function PreCheck() {
           </div>
           {evidenceOpen && (
             <div className="mt-4 space-y-3 rounded-xl bg-secondary/50 p-4 text-sm animate-fade-in">
-              <div><div className="text-xs font-medium text-muted-foreground">EHR · Rehabilitation & medication records (simulated)</div><p className="mt-1">{EHR_TREATMENT_EXCERPT}</p></div>
-              <div><div className="text-xs font-medium text-muted-foreground">EHR · Radiology</div><p className="mt-1">X-ray Lumbar Spine AP/Lat, 12 Jul 2026 — mild L4–L5 disc-space narrowing; no fracture. (Not attached to request.)</p></div>
-              <p className="text-xs text-muted-foreground">Every finding links to its source record. Insurancly does not write or infer missing clinical facts.</p>
+               <div><div className="text-xs font-medium text-muted-foreground">Available request information (simulated)</div><p className="mt-1">The request lists persistent radicular symptoms and prior physiotherapy and analgesics; it does not give treatment duration or response in enough detail to confirm the protocol prompt.</p></div>
+               <div><div className="text-xs font-medium text-muted-foreground">Medical reports and attachments</div><p className="mt-1">Not accessible to Insurancly. Their contents and attachment status are unknown, not presumed missing.</p></div>
+               <p className="text-xs text-muted-foreground">The team confirms these items from its own records. Insurancly does not invent or extract unseen clinical facts.</p>
             </div>
           )}
         </Panel>
@@ -187,25 +188,25 @@ function PreCheck() {
         <Panel title="Prepare Request" subtitle="Human review — each item needs explicit confirmation by the authorization team or clinician">
           <div className="grid gap-4 md:grid-cols-2">
             <div className={`rounded-xl border p-4 ${c.treatmentResponse ? "border-success/40 bg-success-soft/40" : ""}`}>
-              <div className="flex items-center justify-between"><span className="text-sm font-medium">Documented treatment response</span><span className="text-xs text-muted-foreground">+17%</span></div>
-              <p className="mt-2 rounded-lg bg-secondary/60 p-3 text-xs">{EHR_TREATMENT_EXCERPT}</p>
-              <p className="mt-2 text-[11px] text-muted-foreground">Quoted verbatim from EHR. Clinician must verify before it is added.</p>
-              <textarea value={c.clinicianNote} onChange={(e) => c.setClinicianNote(e.target.value)} disabled={done} placeholder="Optional clinician comment…" className="mt-2 w-full rounded-lg border bg-background p-2 text-xs" rows={2} />
+               <div className="flex items-center justify-between"><span className="text-sm font-medium">Confirm treatment response</span><span className="text-xs text-muted-foreground">+17%</span></div>
+               <p className="mt-2 rounded-lg bg-secondary/60 p-3 text-xs">The request mentions physiotherapy and analgesics. The clinician must check the underlying record and supply any relevant duration and response; Insurancly cannot see the report.</p>
+               <textarea value={c.clinicianNote} onChange={(e) => c.setClinicianNote(e.target.value)} disabled={done} placeholder="Clinician-confirmed treatment response…" className="mt-2 w-full rounded-lg border bg-background p-2 text-xs" rows={2} />
+               <p className="mt-1 text-[11px] text-muted-foreground">Enter the confirmed response before marking this item complete.</p>
               <button disabled={done} onClick={() => c.setTreatmentResponse(!c.treatmentResponse)} className={`mt-2 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium ${c.treatmentResponse ? "bg-success text-success-foreground" : "bg-primary text-primary-foreground"}`}>
-                <UserCheck className="h-3.5 w-3.5" /> {c.treatmentResponse ? "Verified by Dr. K. Almutairi" : "Clinician verifies & adds to request"}
+                 <UserCheck className="h-3.5 w-3.5" /> {c.treatmentResponse ? "Confirmed by clinician" : "Confirm response"}
               </button>
             </div>
-            <div className={`rounded-xl border p-4 ${c.imagingAttached ? "border-success/40 bg-success-soft/40" : ""}`}>
-              <div className="flex items-center justify-between"><span className="text-sm font-medium">Attach imaging report</span><span className="text-xs text-muted-foreground">+12%</span></div>
-              <div className="mt-2 flex items-center gap-2 rounded-lg border border-dashed p-3 text-xs"><Paperclip className="h-4 w-4" /> XR_Lumbar_2026-07-12_report.pdf <span className="text-muted-foreground">· from EHR Radiology</span></div>
-              <button disabled={done} onClick={() => c.setImagingAttached(!c.imagingAttached)} className={`mt-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium ${c.imagingAttached ? "bg-success text-success-foreground" : "bg-primary text-primary-foreground"}`}>
-                <Paperclip className="h-3.5 w-3.5" /> {c.imagingAttached ? "Attached" : "Attach to request"}
+             <div className={`rounded-xl border p-4 ${c.imagingConfirmed ? "border-success/40 bg-success-soft/40" : ""}`}>
+               <div className="flex items-center justify-between"><span className="text-sm font-medium">Confirm supporting imaging status</span><span className="text-xs text-muted-foreground">+12%</span></div>
+               <p className="mt-2 text-xs text-muted-foreground">The team should check whether an imaging report is required and, if so, include it in the submission. Insurancly cannot see or attach that report.</p>
+               <button disabled={done} onClick={() => c.setImagingConfirmed(!c.imagingConfirmed)} className={`mt-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium ${c.imagingConfirmed ? "bg-success text-success-foreground" : "bg-primary text-primary-foreground"}`}>
+                 <UserCheck className="h-3.5 w-3.5" /> {c.imagingConfirmed ? "Confirmed by team" : "Team confirms status"}
               </button>
             </div>
           </div>
           {ready && !done && (
             <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-success/40 bg-success-soft/50 p-4">
-              <div><div className="flex items-center gap-2 font-display text-lg font-semibold text-success"><ShieldCheck className="h-5 w-5" /> Ready for NPHIES</div><p className="text-xs text-muted-foreground">Final review completed by authorization team. Coverage decision remains with the insurer.</p></div>
+               <div><div className="flex items-center gap-2 font-display text-lg font-semibold text-success"><ShieldCheck className="h-5 w-5" /> Ready for NPHIES</div><p className="text-xs text-muted-foreground">Team-confirmed demo items complete. Final submission review and coverage decision remain with the team and insurer respectively.</p></div>
               <button onClick={() => c.setStage("submitting")} className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"><Send className="h-4 w-4" /> Simulate NPHIES submission</button>
             </div>
           )}
@@ -219,7 +220,7 @@ function PreCheck() {
 
 function InsurerInteraction({ submitted }: { submitted: boolean }) {
   const steps = [
-    { t: "16:21", l: "Request submitted to NPHIES (simulated)", d: "Pre-authorization bundle · 3 attachments" },
+     { t: "16:21", l: "Request submitted to NPHIES (simulated)", d: "Pre-authorization request · supporting materials confirmed by team, not accessed by Insurancly" },
     { t: "16:21", l: "NPHIES technical acknowledgement (simulated)", d: "Message structure accepted" },
     { t: "16:34", l: "Insurer X (Demo) response received (simulated)", d: "Decision made by the insurer: Authorized — MRI Lumbar Spine, 1 study, valid 30 days. No additional-information request." },
   ];
