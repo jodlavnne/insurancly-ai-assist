@@ -71,6 +71,7 @@ function PreCheck() {
 
   useEffect(() => {
     if (c.stage === "submitting") { const t = setTimeout(() => c.setStage("submitted"), 2200); return () => clearTimeout(t); }
+    return undefined;
   }, [c.stage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (c.stage === "draft") {
