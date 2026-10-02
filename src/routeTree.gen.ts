@@ -10,33 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as IntelligenceRouteImport } from './routes/intelligence'
+import { Route as NewAuthorizationRouteImport } from './routes/new-authorization'
+import { Route as PrecheckRouteImport } from './routes/precheck'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntelligenceRoute = IntelligenceRouteImport.update({
+  id: '/intelligence',
+  path: '/intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewAuthorizationRoute = NewAuthorizationRouteImport.update({
+  id: '/new-authorization',
+  path: '/new-authorization',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrecheckRoute = PrecheckRouteImport.update({
+  id: '/precheck',
+  path: '/precheck',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/intelligence': typeof IntelligenceRoute
+  '/new-authorization': typeof NewAuthorizationRoute
+  '/precheck': typeof PrecheckRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/intelligence': typeof IntelligenceRoute
+  '/new-authorization': typeof NewAuthorizationRoute
+  '/precheck': typeof PrecheckRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/intelligence': typeof IntelligenceRoute
+  '/new-authorization': typeof NewAuthorizationRoute
+  '/precheck': typeof PrecheckRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/history' | '/intelligence' | '/new-authorization' | '/precheck'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/history' | '/intelligence' | '/new-authorization' | '/precheck'
+  id:
+    | '__root__'
+    | '/'
+    | '/history'
+    | '/intelligence'
+    | '/new-authorization'
+    | '/precheck'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HistoryRoute: typeof HistoryRoute
+  IntelligenceRoute: typeof IntelligenceRoute
+  NewAuthorizationRoute: typeof NewAuthorizationRoute
+  PrecheckRoute: typeof PrecheckRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +95,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intelligence': {
+      id: '/intelligence'
+      path: '/intelligence'
+      fullPath: '/intelligence'
+      preLoaderRoute: typeof IntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new-authorization': {
+      id: '/new-authorization'
+      path: '/new-authorization'
+      fullPath: '/new-authorization'
+      preLoaderRoute: typeof NewAuthorizationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/precheck': {
+      id: '/precheck'
+      path: '/precheck'
+      fullPath: '/precheck'
+      preLoaderRoute: typeof PrecheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HistoryRoute: HistoryRoute,
+  IntelligenceRoute: IntelligenceRoute,
+  NewAuthorizationRoute: NewAuthorizationRoute,
+  PrecheckRoute: PrecheckRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Demo case state lives in a single React context (src/lib/case-store.tsx) wrapped around all routes in __root — keeps the one integrated journey consistent across pages without a backend.
