@@ -125,7 +125,7 @@ function PreCheck() {
           <ul className="divide-y">
              <Row s="ok" extra={<SourceTrail used={["Hospital"]} />}>Diagnosis listed in request</Row>
              <Row s="ok" extra={<SourceTrail used={["Hospital"]} />}>Clinical indication listed in request</Row>
-             <Row s="warn" extra={<SourceTrail used={["Hospital"]} />}>Team must confirm supporting details against hospital protocol</Row>
+             <Row s={ready ? "ok" : "warn"} extra={<SourceTrail used={["Hospital"]} />}>{ready ? "Supporting details confirmed by team against hospital protocol" : "Team must confirm supporting details against hospital protocol"}</Row>
             <Row s={c.treatmentResponse ? "ok" : "warn"} extra={
               <div className="space-y-2">
                 <SourceTrail used={["Hospital", "Saudi", "International"]} />
@@ -147,7 +147,7 @@ function PreCheck() {
          <Panel title="3. Information Available" subtitle="Request-level details only · no medical report or EHR access" tag={<Tag>Request</Tag>}>
           <ul className="divide-y">
              <Row s="ok">Physiotherapy and analgesics mentioned in request</Row>
-             <Row s="warn">Duration and response cannot be verified from the request alone</Row>
+             <Row s={c.treatmentResponse ? "ok" : "warn"}>{c.treatmentResponse ? "Treatment response supplied by clinician" : "Duration and response cannot be verified from the request alone"}</Row>
              <Row s={c.treatmentResponse ? "ok" : "warn"} extra={!c.treatmentResponse && <Tag tone="warning">Team confirmation required</Tag>}>
                {c.treatmentResponse ? "Treatment response confirmed by clinician" : "Confirm treatment response with clinician"}
             </Row>
@@ -190,7 +190,7 @@ function PreCheck() {
             <div className={`rounded-xl border p-4 ${c.treatmentResponse ? "border-success/40 bg-success-soft/40" : ""}`}>
                <div className="flex items-center justify-between"><span className="text-sm font-medium">Confirm treatment response</span><span className="text-xs text-muted-foreground">+17%</span></div>
                <p className="mt-2 rounded-lg bg-secondary/60 p-3 text-xs">The request mentions physiotherapy and analgesics. The clinician must check the underlying record and supply any relevant duration and response; Insurancly cannot see the report.</p>
-               <textarea value={c.clinicianNote} onChange={(e) => c.setClinicianNote(e.target.value)} disabled={done} placeholder="Clinician-confirmed treatment response…" className="mt-2 w-full rounded-lg border bg-background p-2 text-xs" rows={2} />
+               <textarea value={c.clinicianNote} onChange={(e) => { c.setClinicianNote(e.target.value); if (c.treatmentResponse) c.setTreatmentResponse(false); }} disabled={done} placeholder="Clinician-confirmed treatment response…" className="mt-2 w-full rounded-lg border bg-background p-2 text-xs" rows={2} />
                <p className="mt-1 text-[11px] text-muted-foreground">Enter the confirmed response before marking this item complete.</p>
                <button disabled={done || (!c.treatmentResponse && !c.clinicianNote.trim())} onClick={() => c.setTreatmentResponse(!c.treatmentResponse)} className={`mt-2 inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium disabled:cursor-not-allowed disabled:opacity-50 ${c.treatmentResponse ? "bg-success text-success-foreground" : "bg-primary text-primary-foreground"}`}>
                  <UserCheck className="h-3.5 w-3.5" /> {c.treatmentResponse ? "Confirmed by clinician" : "Confirm response"}
