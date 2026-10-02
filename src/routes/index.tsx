@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, FilePlus2, Layers } from "lucide-react";
 import { Panel, Tag } from "@/components/ui-bits";
 import { useCase } from "@/lib/case-store";
+import { LAYERS } from "@/lib/layers";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -15,13 +16,7 @@ export const Route = createFileRoute("/")({
   component: Dashboard,
 });
 
-export const LAYERS = [
-  { n: 1, name: "Technical Compliance", d: "NPHIES requirements, coding, mandatory fields, documentation structure." },
-  { n: 2, name: "Hospital Knowledge", d: "Hospital-approved protocols, internal documentation standards and workflows." },
-  { n: 3, name: "Saudi Knowledge", d: "Applicable Saudi clinical/regulatory guidance, national standards and SFDA information." },
-  { n: 4, name: "International Knowledge", d: "International classifications and guidelines — only when local guidance is insufficient." },
-  { n: 5, name: "Hospital-Specific Insurer Intelligence", d: "Rolling analysis of this hospital's own authorization interactions." },
-];
+
 
 function Dashboard() {
   const { stage, readiness } = useCase();

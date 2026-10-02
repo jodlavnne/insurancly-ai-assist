@@ -3,7 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { ChevronDown, Loader2, Sparkles, Paperclip, ShieldCheck, Send, Lightbulb, Check, BookOpen, ArrowRight, UserCheck } from "lucide-react";
 import { Panel, Tag, StatusIcon, ReadinessRing, SourceTrail, type Source } from "@/components/ui-bits";
 import { useCase, EHR_TREATMENT_EXCERPT } from "@/lib/case-store";
-import { LAYERS } from "./index";
+import { LAYERS } from "@/lib/layers";
 
 export const Route = createFileRoute("/precheck")({
   head: () => ({
